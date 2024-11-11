@@ -1,2 +1,2 @@
 # SnakeGame
- A Verilog based snake game designed for the a Xilinx development FPGA board with a VGA output. To create the project, run the script found at *./snake_game.srcs/scripts_1/new/build_design.tcl*
+ A Verilog based snake game designed for the a Xilinx development FPGA board with a VGA output. To create the project, run the script found at [./snake_game.srcs/scripts_1/new/build_design.tcl](https://github.com/MPethick/SnakeGame/blob/master/snake_game.srcs/scripts_1/new/build_design.tcl) A generated binary and bitstream for the latest version of the project can be found in [./snake_game.runs/impl_1/](https://github.com/MPethick/SnakeGame/tree/master/snake_game.runs/impl_1)
