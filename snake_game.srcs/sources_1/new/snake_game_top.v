@@ -3,7 +3,7 @@
 /*
  * Engineer:     Matthew Pethick
  * Create Date:  08/11/2016
- * Last Edited:  08/11/2024
+ * Last Edited:  11/11/2024
  * Module Name:  snake_game_top
  * Project Name: snake_game
  * Description:  This module is used for connecting all the other modules together  
@@ -17,16 +17,13 @@ module snake_game_top (
     input         btn_u,
     input         btn_r,
     input         btn_d,
-    // output [3:0] seg_select_out,
-    // output [7:0] dec_out,
+    // output [ 3:0] seg_select_out,
+    // output [ 7:0] dec_out,
+    output [11:0] led_out,
     output [11:0] colour_out,
     output        h_sync,
     output        v_sync
 );
-
-  // ! TEMP WHILE 7-SEG DOES NOT EXIST
-  wire [ 3:0] seg_select_out;
-  wire [ 7:0] dec_out;
 
   // Define variables  
   wire [ 9:0] x_coord;
@@ -40,10 +37,10 @@ module snake_game_top (
   wire        win;
   wire        lose;
   wire [ 3:0] score_count;
-  wire        vga_clk;
-  wire        vga_clk_count;
-  wire [ 3:0] bin_in;
-  wire        seg_select;
+  wire        score_clk;
+  wire        score_clk_count;
+  // wire [ 3:0] bin_in;
+  // wire        seg_select;
   wire [ 9:0] shift_x;
   wire [ 8:0] shift_y;
 
@@ -51,12 +48,12 @@ module snake_game_top (
   generic_counter #(
       .COUNTER_WIDTH(1),
       .COUNTER_MAX  (1)
-  ) vga_clock_rectifier (
+  ) score_clock_rectifier (
       .clk     (clk),
       .reset   (1'b0),
       .enable  (1'b1),
-      .trig_out(vga_clk),
-      .count   (vga_clk_count)
+      .trig_out(score_clk),
+      .count   (score_clk_count)
   );
 
   /* Instantiate a generic counter which counts up the score everytime the
@@ -67,7 +64,7 @@ module snake_game_top (
       .COUNTER_WIDTH(4),
       .COUNTER_MAX  (10)
   ) score_counter (
-      .clk     (vga_clk),
+      .clk     (score_clk),
       .reset   (reset),
       .enable  (reached_target),
       .trig_out(win),
@@ -132,21 +129,29 @@ module snake_game_top (
       .snake_colour_out(snake_colour_out)
   );
 
-  // Instantiate the module to control the strobing for the 7-seg display 
-  strobe strobe (
+  // // Instantiate the module to control the strobing for the 7-seg display 
+  // strobe strobe (
+  //     .clk        (clk),
+  //     .score_count(score_count),
+  //     .seg_select (seg_select),
+  //     .seg_value  (bin_in)
+  // );
+
+  // // Instantiate the module to control 7-seg display 
+  // seg_7_display seg_7 (
+  //     .bin_in        (bin_in),
+  //     .seg_select    (seg_select),
+  //     .dot_in        (1'b0),            // The decimal point on the 7-seg is always unused so its driven to 0
+  //     .seg_select_out(seg_select_out),
+  //     .dec_out       (dec_out)
+  // );
+
+  // Instantiate the module to control the RGB LEDs output 
+  led_control led_colour (
       .clk        (clk),
       .score_count(score_count),
-      .seg_select (seg_select),
-      .seg_value  (bin_in)
-  );
-
-  // Instantiate the module to control 7-seg display 
-  seg_7_display seg_7 (
-      .bin_in        (bin_in),
-      .seg_select    (seg_select),
-      .dot_in        (1'b0),            // The decimal point on the 7-seg is always unused so its driven to 0
-      .seg_select_out(seg_select_out),
-      .dec_out       (dec_out)
+      .game_state (game_state),
+      .led_out    (led_out)
   );
 
   // Instantiate the module to control VGA output 

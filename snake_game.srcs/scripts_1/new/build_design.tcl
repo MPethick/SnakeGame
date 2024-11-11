@@ -113,6 +113,8 @@ proc build_snake_game_design {} {
   
   create_bd_design "snake_game_bd"
 
+  create_bd_port -dir I -type clk -freq_hz 100000000 clk
+
   # Note the version is removed.
   create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
 
@@ -123,30 +125,43 @@ proc build_snake_game_design {} {
 
   connect_bd_net [get_bd_ports clk] [get_bd_pins clk_wiz_0/clk_in1]
 
+  create_bd_port -dir I -type rst reset 
+
+  create_bd_cell -type ip -vlnv xilinx.com:ip:xpm_cdc_gen: xpm_cdc_gen_0
+
+  set_property -dict [ list             \
+                       CONFIG.WIDTH {1} \
+                     ] [get_bd_cells xpm_cdc_gen_0]
+
+  connect_bd_net [get_bd_ports clk]                [get_bd_pins xpm_cdc_gen_0/src_clk]
+  connect_bd_net [get_bd_pins  clk_wiz_0/clk_out1] [get_bd_pins xpm_cdc_gen_0/dest_clk]
+  connect_bd_net [get_bd_ports reset]              [get_bd_pins xpm_cdc_gen_0/src_in]
+
 
   ## Add Module Reference Flow Object (MRF), any Verilog module can be used
   ## in IPI. If you want to use Av or VHDL, just create a 121 port wrapper.
   create_bd_cell -type module -reference snake_game_top snake_game_top_0
 
-  create_bd_port -dir I -type clk -freq_hz 100000000 clk
-  create_bd_port -dir I -type rst                    reset 
-  create_bd_port -dir I                              btn_l
-  create_bd_port -dir I                              btn_u
-  create_bd_port -dir I                              btn_r
-  create_bd_port -dir I                              btn_d
+  create_bd_port -dir I btn_l
+  create_bd_port -dir I btn_u
+  create_bd_port -dir I btn_r
+  create_bd_port -dir I btn_d
   
-  connect_bd_net [get_bd_pins  clk_wiz_0/clk_out1] [get_bd_pins snake_game_top_0/clk]
-  # connect_bd_net [get_bd_ports clk]                [get_bd_pins snake_game_top_0/clk]
-  connect_bd_net [get_bd_ports reset]              [get_bd_pins snake_game_top_0/reset]
-  connect_bd_net [get_bd_ports btn_l]              [get_bd_pins snake_game_top_0/btn_l]
-  connect_bd_net [get_bd_ports btn_u]              [get_bd_pins snake_game_top_0/btn_u]
-  connect_bd_net [get_bd_ports btn_r]              [get_bd_pins snake_game_top_0/btn_r]
-  connect_bd_net [get_bd_ports btn_d]              [get_bd_pins snake_game_top_0/btn_d]
+  connect_bd_net [get_bd_pins  clk_wiz_0/clk_out1]    [get_bd_pins snake_game_top_0/clk]
+  # connect_bd_net [get_bd_ports clk]                   [get_bd_pins snake_game_top_0/clk]
+  connect_bd_net [get_bd_pins xpm_cdc_gen_0/dest_out] [get_bd_pins snake_game_top_0/reset]
+  # connect_bd_net [get_bd_ports reset]                 [get_bd_pins snake_game_top_0/reset]
+  connect_bd_net [get_bd_ports btn_l]                 [get_bd_pins snake_game_top_0/btn_l]
+  connect_bd_net [get_bd_ports btn_u]                 [get_bd_pins snake_game_top_0/btn_u]
+  connect_bd_net [get_bd_ports btn_r]                 [get_bd_pins snake_game_top_0/btn_r]
+  connect_bd_net [get_bd_ports btn_d]                 [get_bd_pins snake_game_top_0/btn_d]
 
+  create_bd_port -dir O -from 11 -to 0 led_out
   create_bd_port -dir O -from 11 -to 0 colour_out
   create_bd_port -dir O                h_sync
   create_bd_port -dir O                v_sync
 
+  connect_bd_net [get_bd_pins snake_game_top_0/led_out]    [get_bd_ports led_out] 
   connect_bd_net [get_bd_pins snake_game_top_0/colour_out] [get_bd_ports colour_out] 
   connect_bd_net [get_bd_pins snake_game_top_0/h_sync]     [get_bd_ports h_sync] 
   connect_bd_net [get_bd_pins snake_game_top_0/v_sync]     [get_bd_ports v_sync] 

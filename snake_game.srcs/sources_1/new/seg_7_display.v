@@ -2,7 +2,7 @@
 /*
  * Engineer:     Matthew Pethick
  * Create Date:  27/10/2016
- * Last Edited:  08/11/2024
+ * Last Edited:  11/11/2024
  * Module Name:  seg_7_display
  * Project Name: snake_game 
  * Description:  This module converts the binary number to display 
@@ -24,7 +24,7 @@ module seg_7_display (
 
   // Assign the outputs to their related registers
   assign seg_select_out = select_out;
-  assign dec_out = hex_out;
+  assign dec_out        = hex_out;
 
   /* Use the strobe counter to flicker between the 2 7-segments at a speed 
    * the human eye cannot see (so it appears as both are constantly on)
