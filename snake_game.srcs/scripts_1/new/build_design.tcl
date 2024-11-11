@@ -2,8 +2,8 @@
 set ::baseScriptDir [file dirname [file normalize [info script]]]
 
 ##------------------------------------------------------------------------------
-## These procs allow an in depth report of Vivado variables. Occasionally useful, 
-## when searching for Simulator stuff.
+## These procs allow an in depth report of Vivado variables. Occasionally 
+## useful, when searching for Simulator stuff.
 ## Single lines to keep this file compact. Expand for your interest. 
 ##------------------------------------------------------------------------------
 proc listns {{parentns ::}} { set result [list] ; foreach ns [namespace children $parentns] { lappend result {*}[listns $ns] $ns } ; return $result }
@@ -98,11 +98,11 @@ do_stuff impl             ## Open the project and run implementation
 }
 
 ##------------------------------------------------------------------------------
-## You can load design files in a varity of ways. YAML files can be loaded directly
-## in Vivado TCL for example, or use a dict, proc.
+## You can load design files in a varity of ways. YAML files can be loaded 
+## directly in Vivado TCL for example, or use a dict, proc.
 ## Do not use IPI generated BD files. These can be useful for snapshots, but
-## are non-simple to maintain and expand on. Generally a handful of TCL commands
-## can be used to create quite complex IPI systems.
+## are non-simple to maintain and expand on. Generally a handful of TCL 
+## commands can be used to create quite complex IPI systems.
 ##------------------------------------------------------------------------------
 proc build_snake_game_design {} {
 
@@ -142,6 +142,7 @@ proc build_snake_game_design {} {
   ## in IPI. If you want to use Av or VHDL, just create a 121 port wrapper.
   create_bd_cell -type module -reference snake_game_top snake_game_top_0
 
+  create_bd_port -dir I speedup_disable
   create_bd_port -dir I btn_l
   create_bd_port -dir I btn_u
   create_bd_port -dir I btn_r
@@ -151,6 +152,7 @@ proc build_snake_game_design {} {
   # connect_bd_net [get_bd_ports clk]                   [get_bd_pins snake_game_top_0/clk]
   connect_bd_net [get_bd_pins xpm_cdc_gen_0/dest_out] [get_bd_pins snake_game_top_0/reset]
   # connect_bd_net [get_bd_ports reset]                 [get_bd_pins snake_game_top_0/reset]
+  connect_bd_net [get_bd_ports speedup_disable]       [get_bd_pins snake_game_top_0/speedup_disable]
   connect_bd_net [get_bd_ports btn_l]                 [get_bd_pins snake_game_top_0/btn_l]
   connect_bd_net [get_bd_ports btn_u]                 [get_bd_pins snake_game_top_0/btn_u]
   connect_bd_net [get_bd_ports btn_r]                 [get_bd_pins snake_game_top_0/btn_r]
@@ -173,5 +175,6 @@ proc build_snake_game_design {} {
 ##------------------------------------------------------------------------------
 ## END oF PROCS
 ##------------------------------------------------------------------------------
+
 ## Right, here we go!
 show_help_run_input $argc $argv

@@ -4,6 +4,9 @@ set_property PACKAGE_PIN E3 [get_ports clk]
 set_property PACKAGE_PIN A8 [get_ports reset]
     set_property IOSTANDARD LVCMOS33 [get_ports reset]
 
+set_property PACKAGE_PIN C11 [get_ports speedup_disable]
+    set_property IOSTANDARD LVCMOS33 [get_ports speedup_disable]
+
 set_property PACKAGE_PIN C9 [get_ports btn_l]
     set_property IOSTANDARD LVCMOS33 [get_ports btn_l]
 
