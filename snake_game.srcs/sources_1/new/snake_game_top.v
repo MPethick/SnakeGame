@@ -13,6 +13,7 @@
 module snake_game_top (
     input         clk,
     input         reset,
+    input         speedup_disable,
     input         btn_l,
     input         btn_u,
     input         btn_r,
@@ -115,6 +116,7 @@ module snake_game_top (
   snake_control snake (
       .clk             (clk),
       .reset           (reset),
+      .speedup_disable (speedup_disable),
       .game_state      (game_state),
       .x_coord         (x_coord),
       .y_coord         (y_coord),

@@ -14,6 +14,7 @@
 module snake_control (
     input         clk,
     input         reset,
+    input         speedup_disable,
     input  [ 1:0] game_state,
     input  [ 9:0] x_coord,
     input  [ 8:0] y_coord,
@@ -41,7 +42,7 @@ module snake_control (
 
   // Define variables
   genvar        pixel_num;
-  reg    [ 3:0] i;
+  reg    [ 3:0] i;          
   reg    [ 3:0] speed_count;
   reg           move_snake;
   reg    [ 9:0] snake_state_x  [MAX_LENGTH-1:0];
@@ -53,6 +54,7 @@ module snake_control (
   reg           count;
   reg    [15:0] frame_count;
   wire   [ 3:0] snake_length;
+  wire    [3:0] snake_speed;
   wire          move_clk;
   wire   [19:0] clock_count;
 
@@ -63,6 +65,9 @@ module snake_control (
 
   // Controls length of snake
   assign snake_length     = score_count + 5;
+
+  // Controls the speed of the snake, with a lower number being faster
+  assign snake_speed      = speedup_disable ? 10 : (10 - score_count);
 
   // Instantiate a generic counter which outputs a trigger at a speed of 100Hz                  
   generic_counter #(
@@ -83,7 +88,7 @@ module snake_control (
    * the snake everytime the score increases.
    */
   always @(posedge move_clk) begin
-    if (speed_count == (10 - score_count)) begin
+    if (speed_count == snake_speed) begin
       speed_count <= 4'b0;
       move_snake  <= 1'b1;
     end else begin
