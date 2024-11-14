@@ -2,7 +2,7 @@
 /*
  * Engineer:     Matthew Pethick
  * Create Date:  19/11/2016
- * Last Edited:  08/11/2024
+ * Last Edited:  14/11/2024
  * Module Name:  target_generator
  * Project Name: snake_game  
  * Description:  This module converts the score to be used as an 

@@ -2,7 +2,7 @@
 /*
  * Engineer:     Matthew Pethick
  * Create Date:  29/10/2016
- * Last Edited:  08/11/2024
+ * Last Edited:  14/11/2024
  * Module Name:  target_generator
  * Project Name: snake_game  
  * Description:  This module uses 2 counters to move along every pixel of the screen.
