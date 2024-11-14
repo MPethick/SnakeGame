@@ -39,7 +39,7 @@ module strobe (
   generic_counter #(
       .COUNTER_WIDTH(17),
       .COUNTER_MAX  (100000)
-  ) Clock_rectifier4 (
+  ) clock_rectifier_strobe (
       .clk     (clk),
       .reset   (1'b0),
       .enable  (1'b1),
@@ -51,7 +51,7 @@ module strobe (
   generic_counter #(
       .COUNTER_WIDTH(1),
       .COUNTER_MAX  (1)
-  ) Strobe_counter (
+  ) strobe_counter (
       .clk     (strobe_clk),
       .reset   (1'b0),
       .enable  (1'b1),
