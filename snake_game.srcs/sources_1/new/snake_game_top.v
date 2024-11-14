@@ -49,7 +49,7 @@ module snake_game_top (
   generic_counter #(
       .COUNTER_WIDTH(1),
       .COUNTER_MAX  (1)
-  ) score_clock_rectifier (
+  ) clock_rectifier_score (
       .clk     (clk),
       .reset   (1'b0),
       .enable  (1'b1),

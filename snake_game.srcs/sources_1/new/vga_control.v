@@ -40,7 +40,7 @@ module vga_control (
   reg         horizonal_sync;
   reg  [11:0] current_colour;
   wire        half_speed_clk;
-  wire [ 1:0] ClockCount;
+  wire [ 1:0] clock_count;
   wire        vert_count_trig_out;
   wire [ 8:0] vert_count;
   wire        horz_count_trig_out;
@@ -58,12 +58,12 @@ module vga_control (
   generic_counter #(
       .COUNTER_WIDTH(2),
       .COUNTER_MAX  (3)
-  ) Clock_rectifier1 (
+  ) clock_rectifier_vga (
       .clk     (clk),
       .reset   (1'b0),
       .enable  (1'b1),
       .trig_out(half_speed_clk),
-      .count   (ClockCount)
+      .count   (clock_count)
   );
 
   /* Instantiate a generic counter to count up to the front porch
@@ -72,7 +72,7 @@ module vga_control (
   generic_counter #(
       .COUNTER_WIDTH(10),
       .COUNTER_MAX  (HORZ_TIME_TO_FRONT_PORCH_END)
-  ) CounterHorz (
+  ) counter_horz (
       .clk     (half_speed_clk),
       .reset   (1'b0),
       .enable  (1'b1),
@@ -86,7 +86,7 @@ module vga_control (
   generic_counter #(
       .COUNTER_WIDTH(9),
       .COUNTER_MAX  (VERT_TIME_TO_FRONT_PORCH_END)
-  ) CounterVert (
+  ) counter_vert (
       .clk     (half_speed_clk),
       .reset   (1'b0),
       .enable  (horz_count_trig_out),

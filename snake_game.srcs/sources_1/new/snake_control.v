@@ -73,7 +73,7 @@ module snake_control (
   generic_counter #(
       .COUNTER_WIDTH(20),
       .COUNTER_MAX  (1000000)
-  ) Clock_rectifier2 (
+  ) clock_rectifier_snake (
       .clk     (clk),
       .reset   (1'b0),
       .enable  (1'b1),
