@@ -1,6 +1,12 @@
 set_property PACKAGE_PIN E3 [get_ports clk]
     set_property IOSTANDARD LVCMOS33 [get_ports clk]
 
+# Define frequencies for the internally generated clocks
+create_generated_clock -name SCORE_CLK -source [get_pins -hierarchical -filter { NAME =~  "*clk_wiz_0/inst/mmcm_adv_inst/CLKOUT0" }] -divide_by 2 [get_pins -hierarchical -filter { NAME =~  "*snake_game_top_0/inst/clock_rectifier_score/trigger_reg/Q" }]
+create_generated_clock -name VGA_CLK -source [get_pins -hierarchical -filter { NAME =~  "*clk_wiz_0/inst/mmcm_adv_inst/CLKOUT0" }] -divide_by 4 [get_pins -hierarchical -filter { NAME =~  "*snake_game_top_0/inst/clock_rectifier_vga/trigger_reg/Q" }]
+create_generated_clock -name MOVE_CLK -source [get_pins -hierarchical -filter { NAME =~  "*clk_wiz_0/inst/mmcm_adv_inst/CLKOUT0" }] -divide_by 1000000 [get_pins -hierarchical -filter { NAME =~  "*snake_game_top_0/inst/snake/clock_rectifier_snake/trigger_reg/Q" }]
+create_generated_clock -name STROBE_CLK -source [get_pins -hierarchical -filter { NAME =~  "*clk_wiz_0/inst/mmcm_adv_inst/CLKOUT0" }] -divide_by 100000 [get_pins -hierarchical -filter { NAME =~  "*snake_game_top_0/inst/strobe/clock_rectifier_strobe/trigger_reg/Q" }]
+
 set_property PACKAGE_PIN A8 [get_ports reset]
     set_property IOSTANDARD LVCMOS33 [get_ports reset]
 
@@ -18,32 +24,6 @@ set_property PACKAGE_PIN D9 [get_ports btn_r]
 
 set_property PACKAGE_PIN B9 [get_ports btn_d]
         set_property IOSTANDARD LVCMOS33 [get_ports btn_d] 
-
-# set_property PACKAGE_PIN U2 [get_ports {seg_select_out[0]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {seg_select_out[0]}]
-# set_property PACKAGE_PIN U4 [get_ports {seg_select_out[1]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {seg_select_out[1]}]
-# set_property PACKAGE_PIN V4 [get_ports {seg_select_out[2]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {seg_select_out[2]}]
-# set_property PACKAGE_PIN W4 [get_ports {seg_select_out[3]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {seg_select_out[3]}]
-
-# set_property PACKAGE_PIN W7 [get_ports {dec_out[0]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[0]}]
-# set_property PACKAGE_PIN W6 [get_ports {dec_out[1]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[1]}]
-# set_property PACKAGE_PIN U8 [get_ports {dec_out[2]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[2]}]
-# set_property PACKAGE_PIN V8 [get_ports {dec_out[3]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[3]}]
-# set_property PACKAGE_PIN U5 [get_ports {dec_out[4]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[4]}]
-# set_property PACKAGE_PIN V5 [get_ports {dec_out[5]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[5]}]
-# set_property PACKAGE_PIN U7 [get_ports {dec_out[6]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[6]}]
-# set_property PACKAGE_PIN V7 [get_ports {dec_out[7]}]
-#     set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[7]}]
 
 set_property PACKAGE_PIN E1 [get_ports {led_out[0]}]
     set_property IOSTANDARD LVCMOS33 [get_ports {led_out[0]}]
