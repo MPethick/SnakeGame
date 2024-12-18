@@ -2,7 +2,7 @@
 /*
  * Engineer:     Matthew Pethick
  * Create Date:  19/11/2016
- * Last Edited:  08/11/2024
+ * Last Edited:  18/12/2024
  * Module Name:  start_screen
  * Project Name: snake_game
  * Description:  This module is used for controlling the movement om the start screen
@@ -30,11 +30,11 @@ module start_screen (
   assign shift_y = shift_word_y;
 
   /* Instantiate a generic counter which outputs a trigger at a speed of 
-   * 5Hz for use on the the moving word
+   * 50Hz for use on the the moving word
    */
   generic_counter #(
       .COUNTER_WIDTH(21),
-      .COUNTER_MAX  (2000000)
+      .COUNTER_MAX  (1999999)
   ) trigger_creator (
       .clk     (clk),
       .reset   (1'b0),
@@ -50,11 +50,11 @@ module start_screen (
    * x and y shift depending on the variable mentioned earlier. 
    */
   always @(posedge clk) begin
-    if ((shift_word_x == 2 || shift_word_x == 449) && word_wait_x == 1) begin
+    if ((shift_word_x == 2 || shift_word_x == 447) && word_wait_x == 1) begin
       word_wait_x <= 0;
       word_x      <= ~word_x;
     end else begin
-      if ((shift_word_y == 2 || shift_word_y == 399) && word_wait_y == 1) begin
+      if ((shift_word_y == 2 || shift_word_y == 397) && word_wait_y == 1) begin
         word_wait_y <= 0;
         word_y      <= ~word_y;
       end

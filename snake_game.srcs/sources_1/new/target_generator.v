@@ -25,13 +25,15 @@ module target_generator (
 
   // Define variables
   reg [7:0] random_x = 0;
+  reg [7:0] random_x_d1 = 0;
   reg [6:0] random_y = 0;
+  reg [6:0] random_y_d1 = 0;
   reg [9:0] target_x = 120;
   reg [8:0] target_y = 80;
 
   // Assign the outputs to their related registers
-  assign target_x_coord = target_x;
-  assign target_y_coord = target_y;
+  assign target_x_coord = target_x % x_max;
+  assign target_y_coord = target_y % y_max;
 
   /* On every positive clock edge generate a random X
    * coordinate using a linear feedback shift register
@@ -76,9 +78,13 @@ module target_generator (
    * the screen it moves it inside.
    */
   always @(posedge clk) begin
+    // Delay added for timing purposes
+    random_x_d1 <= random_x;
+    random_y_d1 <= random_y;
+
     if (reset || reached_target) begin
-      target_x <= (random_x * 10) % x_max;
-      target_y <= (random_y * 10) % y_max;
+      target_x <= (random_x_d1 * 10) % x_max;
+      target_y <= (random_y_d1 * 10) % y_max;
     end
   end
 

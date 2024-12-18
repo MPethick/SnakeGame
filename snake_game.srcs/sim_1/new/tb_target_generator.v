@@ -19,10 +19,10 @@ module tb_target_generator;
       .target_y_coord(target_y_coord)
   );
 
-  // Initialise the clock to use in simulation at a speed of 100MHz
+  // Initialise the clock to use in simulation at a speed of 125MHz
   initial begin
     clk = 0;
-    forever #5 clk = ~clk;
+    forever #4 clk = ~clk;
   end
 
   // Simulation values  

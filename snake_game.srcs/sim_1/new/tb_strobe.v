@@ -6,7 +6,7 @@ module tb_strobe;
   // Ports
   reg        clk;
   reg  [3:0] score_count;
-  wire       seg_select;
+  wire [3:0] seg_select;
   wire [3:0] seg_value;
 
   // Instantiate the module to control the strobing for the 7-seg display
@@ -17,10 +17,10 @@ module tb_strobe;
       .seg_value  (seg_value)
   );
 
-  // Initialise the clock to use in simulation at a speed of 100MHz
+  // Initialise the clock to use in simulation at a speed of 125MHz
   initial begin
     clk = 0;
-    forever #5 clk = ~clk;
+    forever #4 clk = ~clk;
   end
 
   // Simulation values

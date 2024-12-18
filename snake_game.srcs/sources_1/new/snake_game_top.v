@@ -3,7 +3,7 @@
 /*
  * Engineer:     Matthew Pethick
  * Create Date:  08/11/2016
- * Last Edited:  14/11/2024
+ * Last Edited:  18/12/2024
  * Module Name:  snake_game_top
  * Project Name: snake_game
  * Description:  This module is used for connecting all the other modules together  
@@ -11,19 +11,25 @@
 
 
 module snake_game_top (
-    input         clk,
-    input         reset,
-    input         speedup_disable,
-    input         btn_l,
-    input         btn_u,
-    input         btn_r,
-    input         btn_d,
-    // output [ 3:0] seg_select_out,
-    // output [ 7:0] dec_out,
-    output [11:0] led_out,
-    output [11:0] colour_out,
-    output        h_sync,
-    output        v_sync
+    (* X_INTERFACE_INFO = `"xilinx.com:signal:clock:1.0 name_clock CLK`" *)
+    (* X_INTERFACE_PARAMETER = `"FREQ_HZ 100000000 `" *)
+    input         clk,              // 100MHz
+    input         reset,            //
+    input         speedup_disable,  //
+    input         btn_l,            //
+    input         btn_u,            //
+    input         btn_r,            //
+    input         btn_d,            //
+    output [ 3:0] seg_select_out,   //
+    output [ 7:0] dec_out,          //
+    output [11:0] led_out,          //
+    (* X_INTERFACE_INFO = `"xilinx.com:signal:clock:1.0 name_clock VGA_CLK`" *)
+    (* X_INTERFACE_PARAMETER = `"FREQ_HZ 25000000 `" *)
+    output        vga_clk,          // 25MHz
+    output        h_sync,           //
+    output        v_sync,           //
+    output        vde,              //
+    output [11:0] colour_out        //
 );
 
   // Define variables  
@@ -31,7 +37,7 @@ module snake_game_top (
   wire [ 8:0] y_coord;
   wire [ 9:0] target_x_coord;
   wire [ 8:0] target_y_coord;
-  wire [11:0] snake_colour_out;
+  wire [11:0] colour_in;
   wire [ 1:0] game_state;
   wire [ 1:0] direction;
   wire        reached_target;
@@ -40,8 +46,9 @@ module snake_game_top (
   wire [ 3:0] score_count;
   wire        score_clk;
   wire        score_clk_count;
-  // wire [ 3:0] bin_in;
-  // wire        seg_select;
+  wire [ 1:0] vga_clk_count;
+  wire [ 3:0] bin_in;
+  wire        seg_select;
   wire [ 9:0] shift_x;
   wire [ 8:0] shift_y;
 
@@ -58,9 +65,9 @@ module snake_game_top (
   );
 
   /* Instantiate a generic counter which counts up the score everytime the
-     * target is eaten and outputs a seperate trigger when the counter
-     * reaches 10 to use to set it to the win state.
-     */
+   * target is eaten and outputs a seperate trigger when the counter
+   * reaches 10 to use to set it to the win state.
+   */
   generic_counter #(
       .COUNTER_WIDTH(4),
       .COUNTER_MAX  (10)
@@ -71,6 +78,19 @@ module snake_game_top (
       .trig_out(win),
       .count   (score_count)
   );
+
+  // Instantiate a generic counter which outputs a trigger at a speed of 25MHz       
+  generic_counter #(
+      .COUNTER_WIDTH(2),
+      .COUNTER_MAX  (3)
+  ) clock_rectifier_vga (
+      .clk     (clk),
+      .reset   (1'b0),
+      .enable  (1'b1),
+      .trig_out(vga_clk),
+      .count   (vga_clock_count)
+  );
+
 
   // Instantiate the module to control the state of the game (e.g. win/lose)     
   master_state_machine msm (
@@ -128,25 +148,25 @@ module snake_game_top (
       .score_count     (score_count),
       .reached_target  (reached_target),
       .lose            (lose),
-      .snake_colour_out(snake_colour_out)
+      .snake_colour_out(colour_in)
   );
 
-  // // Instantiate the module to control the strobing for the 7-seg display 
-  // strobe strobe (
-  //     .clk        (clk),
-  //     .score_count(score_count),
-  //     .seg_select (seg_select),
-  //     .seg_value  (bin_in)
-  // );
+  // Instantiate the module to control the strobing for the 7-seg display 
+  strobe strobe (
+      .clk        (clk),
+      .score_count(score_count),
+      .seg_select (seg_select),
+      .seg_value  (bin_in)
+  );
 
-  // // Instantiate the module to control 7-seg display 
-  // seg_7_display seg_7 (
-  //     .bin_in        (bin_in),
-  //     .seg_select    (seg_select),
-  //     .dot_in        (1'b0),            // The decimal point on the 7-seg is always unused so its driven to 0
-  //     .seg_select_out(seg_select_out),
-  //     .dec_out       (dec_out)
-  // );
+  // Instantiate the module to control 7-seg display 
+  seg_7_display seg_7 (
+      .bin_in        (bin_in),
+      .seg_select    (seg_select),
+      .dot_in        (1'b0),            // The decimal point on the 7-seg is always unused so its driven to 0
+      .seg_select_out(seg_select_out),
+      .dec_out       (dec_out)
+  );
 
   // Instantiate the module to control the RGB LEDs output 
   led_control led_colour (
@@ -159,12 +179,14 @@ module snake_game_top (
   // Instantiate the module to control VGA output 
   vga_control vga (
       .clk       (clk),
-      .colour_in (snake_colour_out),
-      .colour_out(colour_out),
+      .vga_clk   (vga_clk),
+      .colour_in (colour_in),
       .addr_h    (x_coord),
       .addr_v    (y_coord),
       .h_sync    (h_sync),
-      .v_sync    (v_sync)
+      .v_sync    (v_sync),
+      .vde       (vde),
+      .colour_out(colour_out)
   );
 
 endmodule
