@@ -24,10 +24,10 @@ module tb_navigation_state_machine;
   );
 
 
-  // Initialise the clock to use in simulation at a speed of 125MHz
+  // Initialise the clock to use in simulation at a speed of 100MHz
   initial begin
     clk = 0;
-    forever #4 clk = ~clk;
+    forever #5 clk = ~clk;
   end
 
   // Simulation values   
