@@ -7,12 +7,12 @@ set ::baseScriptDir [file dirname [file normalize [info script]]]
 ## Single lines to keep this file compact. Expand for your interest. 
 ##------------------------------------------------------------------------------
 proc listns {{parentns ::}} { set result [list] ; foreach ns [namespace children ${parentns}] { lappend result {*}[listns ${ns}] ${ns} } ; return $result }
-proc dumpAllVariablesInNamespace  {} {foreach  nameSpace [listns] { puts ${nameSpace}; foreach varName [info vars ${nameSpace}::*] { catch {puts "    [format %-40s ${varName}] = [set ${varName}]"}} } }
+proc dumpAllVariablesInNamespace  {} {foreach  nameSpace [listns] { puts ${nameSpace}; foreach varName [info vars ${nameSpace}::*] { catch { puts "    [format %-40s ${varName}] = [set ${varName}]" } } } }
 ## Show the project settings for this Project. Again single line, expand for understanding. However this form is useful to modify for objects in IPI
 proc show_project_settings { } { foreach prop [list_property [current_project] ] { set retStr "[format %-50s ${prop}] [get_property ${prop} [current_project]]"; puts "${retStr}" } }
 proc show_bdcell_settings  { ipName } { foreach prop [list_property [get_bd_cells ${ipName}] ] { set retStr "  dict set ip_config [format %-50s ${prop}] [get_property ${prop} [get_bd_cells ${ipName}]]"; puts "${retStr}" } }
 
-proc putsBanner {myStr} { puts "##[string repeat "-" 78]\n## ${myStr}\n##[string repeat "-" 78]"}
+proc putsBanner {myStr} { puts "##[string repeat "-" 78]\n## ${myStr}\n##[string repeat "-" 78]" }
 
 ## --- Synthesis and implementation shorthands
 proc uuSynth     { } {  reset_run synth_1; uuLaunchRun synth_1 }
@@ -51,8 +51,15 @@ proc do_stuff { cmdArgs } {
 
   if { [regex bool ${cmdArgs}] } { 
     set board "bool"
+
+    if { [regex diag ${cmdArgs}] } { 
+      set button_config "diag"
+    } else {
+      set button_config "square"
+    }
   } elseif { [regex arty ${cmdArgs}] } { 
     set board "arty"
+    set button_config "line"
   } else {
     putsBanner "Please select a board to use via command line input (arty or bool)."
   }
@@ -60,9 +67,9 @@ proc do_stuff { cmdArgs } {
   set myNAME "${board}_snake_game_[clock format [clock seconds] -format "%Y%m%d_%H%M%S"]"
   set myPATH ./${myNAME}
 
-  if { ${board} eq "arty"} {
+  if { ${board} eq "arty" } {
     set myPART "xc7a35ticsg324-1L"; # Artix-7
-  } elseif { ${board} eq "bool"} {
+  } elseif { ${board} eq "bool" } {
     set myPART "xc7s50csga324-1"; # Spartan-7
   }
 
@@ -101,7 +108,7 @@ proc show_help_run_input { argc argv } {
 
 puts "
 do_stuff \{board_name\}proj     ## Just open the project
-                             ## Use with sim as also.
+                              ## Use with sim as also.
 do_stuff \{board_name\}ipi      ## Just open the IPI design
 do_stuff \{board_name\}impl     ## Open the project and run implementation
 
@@ -122,7 +129,12 @@ proc build_snake_game_design { board } {
   ## Add the files we need from a known root point.
   add_files -fileset sources_1 ${::baseScriptDir}/../../sources_1/new
   add_files -fileset sim_1     ${::baseScriptDir}/../../sim_1/new
-  add_files -fileset constrs_1 ${::baseScriptDir}/../../constrs_1/new/${board}_constraints.xdc
+  ## Allow customisation of button layout for boolean board via constraints
+  if {${button_config} eq "diag" } {
+    add_files -fileset constrs_1 ${::baseScriptDir}/../../constrs_1/new/${board}_diag_constraints.xdc
+  } else {
+    add_files -fileset constrs_1 ${::baseScriptDir}/../../constrs_1/new/${board}_constraints.xdc
+  }
   
   create_bd_design "snake_game_bd"
 
@@ -175,7 +187,7 @@ proc build_snake_game_design { board } {
   connect_bd_net [get_bd_pins snake_game_top_0/led_out]    [get_bd_ports led_out] 
 
   # Arty board uses a VGA output and colour LEDs for the score
-  if { ${board} eq "arty"} {
+  if { ${board} eq "arty" } {
     create_bd_port -dir O                h_sync
     create_bd_port -dir O                v_sync
     create_bd_port -dir O -from 11 -to 0 colour_out
@@ -186,7 +198,7 @@ proc build_snake_game_design { board } {
   }
   
   # Boolean board uses a HDMI output and a 7-seg display for the score
-  if { ${board} eq "bool"} {
+  if { ${board} eq "bool" } {
     create_bd_port -dir O -from 1 -to 0 seg_select_out
     create_bd_port -dir O -from 7 -to 0 dec_out
 
