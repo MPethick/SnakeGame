@@ -51,8 +51,9 @@ proc do_stuff { cmdArgs } {
 
   if { [regex bool ${cmdArgs}] } {
     set board "bool"
-
-    if { [regex diag ${cmdArgs}] } {
+    if { [regex pmod ${cmdArgs}] } {
+      set button_config "pmod"      
+    } elseif { [regex diag ${cmdArgs}] } {
       set button_config "diag"
     } else {
       set button_config "square"
@@ -130,9 +131,11 @@ proc build_snake_game_design { board } {
   add_files -fileset sources_1 ${::baseScriptDir}/../../sources_1/new
   add_files -fileset sim_1     ${::baseScriptDir}/../../sim_1/new
   ## Allow customisation of button layout for boolean board via constraints
-  if {${button_config} eq "diag" } {
+  if {${button_config} eq "pmod" } {
+    add_files -fileset constrs_1 ${::baseScriptDir}/../../constrs_1/new/${board}_pmod_constraints.xdc
+  } elseif { ${button_config} eq "diag" } {
     add_files -fileset constrs_1 ${::baseScriptDir}/../../constrs_1/new/${board}_diag_constraints.xdc
-  } else {
+  } else  {
     add_files -fileset constrs_1 ${::baseScriptDir}/../../constrs_1/new/${board}_constraints.xdc
   }
 
