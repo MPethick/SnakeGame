@@ -2,9 +2,9 @@
 set ::baseScriptDir [file dirname [file normalize [info script]]]
 
 ##------------------------------------------------------------------------------
-## These procs allow an in depth report of Vivado variables. Occasionally 
+## These procs allow an in depth report of Vivado variables. Occasionally
 ## useful, when searching for Simulator stuff.
-## Single lines to keep this file compact. Expand for your interest. 
+## Single lines to keep this file compact. Expand for your interest.
 ##------------------------------------------------------------------------------
 proc listns {{parentns ::}} { set result [list] ; foreach ns [namespace children ${parentns}] { lappend result {*}[listns ${ns}] ${ns} } ; return $result }
 proc dumpAllVariablesInNamespace  {} {foreach  nameSpace [listns] { puts ${nameSpace}; foreach varName [info vars ${nameSpace}::*] { catch { puts "    [format %-40s ${varName}] = [set ${varName}]" } } } }
@@ -22,7 +22,7 @@ proc uuSynthImpl { } {  uuSynth; close_design; uuImpl; }
 ## --- Common launcher
 proc uuLaunchRun { runType } {
 
-  launch_runs        ${runType} -jobs 16 
+  launch_runs        ${runType} -jobs 16
   wait_on_run        ${runType}
   open_run           ${runType}
   uuDoCustomAnalysis ${runType} 1 3 10
@@ -32,12 +32,12 @@ proc uuLaunchRun { runType } {
 ## --- Report timing to a file, add a tag so we know where it was called post synthesis or impl
 proc uuDoCustomAnalysis { runName depth levels {paths 30}} {
 
-  report_control_sets    -hierarchical -hierarchical_depth ${depth}                                                                                                        
+  report_control_sets    -hierarchical -hierarchical_depth ${depth}
   report_design_analysis -timing -routes -logic_level_distribution -of_timing_paths [get_timing_paths -routable_nets -max_paths ${paths} -filter "LOGIC_LEVELS >= ${levels}" ]
   report_design_analysis -timing -show_all -max_paths ${paths} -full_logical_pin
   report_utilization     -hierarchical -hierarchical_depth ${depth}
 
-  foreach stat [list_property [get_runs ${runName}]] { 
+  foreach stat [list_property [get_runs ${runName}]] {
     if {[regexp STATS\..+ ${stat}]} {  puts "      -> [format %-40s ${stat}] [get_property ${stat} [get_runs ${runName}]]" }
   }
 }
@@ -46,18 +46,18 @@ proc uuDoCustomAnalysis { runName depth levels {paths 30}} {
 ## --- Main call routine. Passed one argument thats interperted.
 ## -----------------------------------------------------------------------------
 proc do_stuff { cmdArgs } {
-  
+
   set cmdArgs [string tolower ${cmdArgs}]
 
-  if { [regex bool ${cmdArgs}] } { 
+  if { [regex bool ${cmdArgs}] } {
     set board "bool"
 
-    if { [regex diag ${cmdArgs}] } { 
+    if { [regex diag ${cmdArgs}] } {
       set button_config "diag"
     } else {
       set button_config "square"
     }
-  } elseif { [regex arty ${cmdArgs}] } { 
+  } elseif { [regex arty ${cmdArgs}] } {
     set board "arty"
     set button_config "line"
   } else {
@@ -84,24 +84,24 @@ proc do_stuff { cmdArgs } {
   build_snake_game_design ${board}
 
   validate_bd_design -force
-  set_property synth_checkpoint_mode None [get_files *.bd]  
-  generate_target all                     [get_files *.bd]   
+  set_property synth_checkpoint_mode None [get_files *.bd]
+  generate_target all                     [get_files *.bd]
   export_ip_user_files -of_objects        [get_files *.bd] -no_script -sync -force -quiet
   add_files -norecurse [ make_wrapper -files [get_files *.bd] -top ]
   set_property top snake_game_bd_wrapper [current_fileset]
-  
+
   # show_ip_settings
   show_bdcell_settings snake_game_top_0
 
   if { [regex ipi ${cmdArgs}] } { putsBanner "When ready you can use uuSynthImpl to run Syntheis/implementation and generate the most useful reports." }
-  
+
   if { [regex impl ${cmdArgs}] } { uuSynthImpl }
 
 }
 
 ##------------------------------------------------------------------------------
 proc show_help_run_input { argc argv } {
-  
+
   puts "${argc} - number items of arguments passed to a script."
   puts "${argv} - list of the arguments.\n${argv}[0]"
   puts "Running from Directory ${::baseScriptDir}"
@@ -114,14 +114,14 @@ do_stuff \{board_name\}impl     ## Open the project and run implementation
 
 "
   if { ${argc} > 0 } { do_stuff [lindex ${argv} 0] }
-  
+
 }
 
 ##------------------------------------------------------------------------------
-## You can load design files in a varity of ways. YAML files can be loaded 
+## You can load design files in a varity of ways. YAML files can be loaded
 ## directly in Vivado TCL for example, or use a dict, proc.
 ## Do not use IPI generated BD files. These can be useful for snapshots, but
-## are non-simple to maintain and expand on. Generally a handful of TCL 
+## are non-simple to maintain and expand on. Generally a handful of TCL
 ## commands can be used to create quite complex IPI systems.
 ##------------------------------------------------------------------------------
 proc build_snake_game_design { board } {
@@ -135,7 +135,7 @@ proc build_snake_game_design { board } {
   } else {
     add_files -fileset constrs_1 ${::baseScriptDir}/../../constrs_1/new/${board}_constraints.xdc
   }
-  
+
   create_bd_design "snake_game_bd"
 
   create_bd_port -dir I -type clk -freq_hz 100000000 clk
@@ -150,7 +150,7 @@ proc build_snake_game_design { board } {
 
   connect_bd_net [get_bd_ports clk] [get_bd_pins clk_wiz_0/clk_in1]
 
-  create_bd_port -dir I -type rst reset 
+  create_bd_port -dir I -type rst reset
 
   set_property -dict [ list                        \
                        CONFIG.POLARITY ACTIVE_HIGH \
@@ -171,7 +171,7 @@ proc build_snake_game_design { board } {
   create_bd_port -dir I btn_u
   create_bd_port -dir I btn_r
   create_bd_port -dir I btn_d
-  
+
   connect_bd_net [get_bd_pins  clk_wiz_0/clk_out1]               [get_bd_pins snake_game_top_0/clk]
   # connect_bd_net [get_bd_ports clk]                              [get_bd_pins snake_game_top_0/clk]
   connect_bd_net [get_bd_pins proc_sys_reset_0/peripheral_reset] [get_bd_pins snake_game_top_0/reset]
@@ -184,7 +184,7 @@ proc build_snake_game_design { board } {
 
   create_bd_port -dir O -from 11 -to 0 led_out
 
-  connect_bd_net [get_bd_pins snake_game_top_0/led_out]    [get_bd_ports led_out] 
+  connect_bd_net [get_bd_pins snake_game_top_0/led_out]    [get_bd_ports led_out]
 
   # Arty board uses a VGA output and colour LEDs for the score
   if { ${board} eq "arty" } {
@@ -192,20 +192,22 @@ proc build_snake_game_design { board } {
     create_bd_port -dir O                v_sync
     create_bd_port -dir O -from 11 -to 0 colour_out
 
-    connect_bd_net [get_bd_pins snake_game_top_0/h_sync]     [get_bd_ports h_sync] 
+    connect_bd_net [get_bd_pins snake_game_top_0/h_sync]     [get_bd_ports h_sync]
     connect_bd_net [get_bd_pins snake_game_top_0/v_sync]     [get_bd_ports v_sync]
-    connect_bd_net [get_bd_pins snake_game_top_0/colour_out] [get_bd_ports colour_out] 
+    connect_bd_net [get_bd_pins snake_game_top_0/colour_out] [get_bd_ports colour_out]
   }
-  
+
   # Boolean board uses a HDMI output and a 7-seg display for the score
   if { ${board} eq "bool" } {
-    create_bd_port -dir O -from 1 -to 0 seg_select_out
-    create_bd_port -dir O -from 7 -to 0 dec_out
+    create_bd_port -dir O -from 7 -to 0 seg_select_out
+    create_bd_port -dir O -from 7 -to 0 dec_out_1
+    create_bd_port -dir O -from 7 -to 0 dec_out_2
 
-    connect_bd_net [get_bd_pins snake_game_top_0/seg_select_out] [get_bd_ports seg_select_out] 
-    connect_bd_net [get_bd_pins snake_game_top_0/dec_out]        [get_bd_ports dec_out] 
+    connect_bd_net [get_bd_pins snake_game_top_0/seg_select_out] [get_bd_ports seg_select_out]
+    connect_bd_net [get_bd_pins snake_game_top_0/dec_out]        [get_bd_ports dec_out_1]
+    connect_bd_net [get_bd_pins snake_game_top_0/dec_out]        [get_bd_ports dec_out_2]
 
-    ## Add VGA to HDMI Encoder IP to the project 
+    ## Add VGA to HDMI Encoder IP to the project
     set_property ip_repo_paths ${::baseScriptDir}/../../sources_1/imports [current_project]
     update_ip_catalog
 
@@ -230,7 +232,7 @@ proc build_snake_game_design { board } {
     # Connect the VGA outputs from the snake game to the Encoder
     connect_bd_net [get_bd_pins snake_game_top_0/vga_clk]          [get_bd_pins vga_to_hdmi_encoder_0/pix_clk]
     connect_bd_net [get_bd_pins clk_wiz_0/clk_out2]                [get_bd_pins vga_to_hdmi_encoder_0/pix_clkx5]
-    connect_bd_net [get_bd_pins clk_wiz_0/locked]                  [get_bd_pins vga_to_hdmi_encoder_0/pix_clk_locked] 
+    connect_bd_net [get_bd_pins clk_wiz_0/locked]                  [get_bd_pins vga_to_hdmi_encoder_0/pix_clk_locked]
     connect_bd_net [get_bd_pins proc_sys_reset_0/peripheral_reset] [get_bd_pins vga_to_hdmi_encoder_0/rst]
     connect_bd_net [get_bd_pins snake_game_top_0/h_sync]           [get_bd_pins vga_to_hdmi_encoder_0/hsync]
     connect_bd_net [get_bd_pins snake_game_top_0/v_sync]           [get_bd_pins vga_to_hdmi_encoder_0/vsync]
@@ -244,8 +246,8 @@ proc build_snake_game_design { board } {
                        ] [get_bd_cells xlslice_0]
 
     connect_bd_net [get_bd_pins snake_game_top_0/colour_out] [get_bd_pins xlslice_0/Din]
-    connect_bd_net [get_bd_pins xlslice_0/Dout]              [get_bd_pins vga_to_hdmi_encoder_0/red] 
-    
+    connect_bd_net [get_bd_pins xlslice_0/Dout]              [get_bd_pins vga_to_hdmi_encoder_0/red]
+
     create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_1
 
     set_property -dict [ list                  \
@@ -289,7 +291,7 @@ proc build_snake_game_design { board } {
                         CONFIG.CONST_VAL {0} \
                       ] [get_bd_cells xlconstant_1]
 
-    connect_bd_net [get_bd_pins xlconstant_1/dout] [get_bd_pins vga_to_hdmi_encoder_0/ade] 
+    connect_bd_net [get_bd_pins xlconstant_1/dout] [get_bd_pins vga_to_hdmi_encoder_0/ade]
 
     #=======================
     # HDMI Output

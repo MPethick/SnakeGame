@@ -26,6 +26,20 @@ set_property -dict {PACKAGE_PIN H2 IOSTANDARD LVCMOS33} [get_ports btn_d]
 
 set_property -dict {PACKAGE_PIN J1 IOSTANDARD LVCMOS33} [get_ports btn_r]
 
+# On-board 7-Segment display 1
+set_property -dict {PACKAGE_PIN D5 IOSTANDARD LVCMOS33} [get_ports {seg_select_out[4]}]
+set_property -dict {PACKAGE_PIN C4 IOSTANDARD LVCMOS33} [get_ports {seg_select_out[5]}]
+set_property -dict {PACKAGE_PIN C7 IOSTANDARD LVCMOS33} [get_ports {seg_select_out[6]}]
+set_property -dict {PACKAGE_PIN A8 IOSTANDARD LVCMOS33} [get_ports {seg_select_out[7]}]
+
+set_property -dict {PACKAGE_PIN D7 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[0]}]
+set_property -dict {PACKAGE_PIN C5 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[1]}]
+set_property -dict {PACKAGE_PIN A5 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[2]}]
+set_property -dict {PACKAGE_PIN B7 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[3]}]
+set_property -dict {PACKAGE_PIN A7 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[4]}]
+set_property -dict {PACKAGE_PIN D6 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[5]}]
+set_property -dict {PACKAGE_PIN B5 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[6]}]
+set_property -dict {PACKAGE_PIN A6 IOSTANDARD LVCMOS33} [get_ports {dec_out_1[7]}]
 
 # On-board 7-Segment display 2
 set_property -dict {PACKAGE_PIN H3 IOSTANDARD LVCMOS33} [get_ports {seg_select_out[0]}]
@@ -33,14 +47,14 @@ set_property -dict {PACKAGE_PIN J4 IOSTANDARD LVCMOS33} [get_ports {seg_select_o
 set_property -dict {PACKAGE_PIN F3 IOSTANDARD LVCMOS33} [get_ports {seg_select_out[2]}]
 set_property -dict {PACKAGE_PIN E4 IOSTANDARD LVCMOS33} [get_ports {seg_select_out[3]}]
 
-set_property -dict {PACKAGE_PIN F4 IOSTANDARD LVCMOS33} [get_ports {dec_out[0]}]
-set_property -dict {PACKAGE_PIN J3 IOSTANDARD LVCMOS33} [get_ports {dec_out[1]}]
-set_property -dict {PACKAGE_PIN D2 IOSTANDARD LVCMOS33} [get_ports {dec_out[2]}]
-set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports {dec_out[3]}]
-set_property -dict {PACKAGE_PIN B1 IOSTANDARD LVCMOS33} [get_ports {dec_out[4]}]
-set_property -dict {PACKAGE_PIN H4 IOSTANDARD LVCMOS33} [get_ports {dec_out[5]}]
-set_property -dict {PACKAGE_PIN D1 IOSTANDARD LVCMOS33} [get_ports {dec_out[6]}]
-set_property -dict {PACKAGE_PIN C1 IOSTANDARD LVCMOS33} [get_ports {dec_out[7]}]
+set_property -dict {PACKAGE_PIN F4 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[0]}]
+set_property -dict {PACKAGE_PIN J3 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[1]}]
+set_property -dict {PACKAGE_PIN D2 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[2]}]
+set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[3]}]
+set_property -dict {PACKAGE_PIN B1 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[4]}]
+set_property -dict {PACKAGE_PIN H4 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[5]}]
+set_property -dict {PACKAGE_PIN D1 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[6]}]
+set_property -dict {PACKAGE_PIN C1 IOSTANDARD LVCMOS33} [get_ports {dec_out_2[7]}]
 
 # HDMI Signals
 set_property -dict {PACKAGE_PIN T14 IOSTANDARD TMDS_33} [get_ports hdmi_tx_tmds_clk_n]

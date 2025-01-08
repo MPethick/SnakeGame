@@ -3,7 +3,7 @@
 /*
  * Engineer:     Matthew Pethick
  * Create Date:  08/11/2016
- * Last Edited:  18/12/2024
+ * Last Edited:  07/01/2025
  * Module Name:  snake_game_top
  * Project Name: snake_game
  * Description:  This module is used for connecting all the other modules together  
@@ -20,7 +20,7 @@ module snake_game_top (
     input         btn_u,            //
     input         btn_r,            //
     input         btn_d,            //
-    output [ 3:0] seg_select_out,   //
+    output [ 7:0] seg_select_out,   //
     output [ 7:0] dec_out,          //
     output [11:0] led_out,          //
     (* X_INTERFACE_INFO = `"xilinx.com:signal:clock:1.0 name_clock VGA_CLK`" *)
@@ -48,7 +48,7 @@ module snake_game_top (
   wire        score_clk_count;
   wire [ 1:0] vga_clk_count;
   wire [ 3:0] bin_in;
-  wire        seg_select;
+  wire [ 2:0] seg_select;
   wire [ 9:0] shift_x;
   wire [ 8:0] shift_y;
 
